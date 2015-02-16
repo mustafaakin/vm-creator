@@ -1,0 +1,21 @@
+{
+  "name": "vm-creator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "async": "^0.9.0",
+    "mysql": "^2.5.4",
+    "q": "^1.1.2",
+    "request": "^2.53.0",
+    "colors": "^1.0.3",
+    "sqlite3": "^3.0.5",
+    "express": "^4.11.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL"
+}
