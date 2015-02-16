@@ -3,8 +3,8 @@ var Q = require("q");
 
 
 
-
 function run(host, job) {
+	info("Running job", job.name, "on", host, "with command", job.Cmd);	
 	var id, code, output;
 	var started = new Date();
 	var ended = null;
@@ -23,15 +23,21 @@ function run(host, job) {
 		output = _output;
 		ended = new Date();
 		// console.log(id, code, output);
-		db.query("INSERT INTO runtime(host,job,experiment,started,ended,elapsed,container,logs,code) VALUES(?,?,?,?,?,?,?,?,?)",
-			[host, job.name, experiment, started, ended, ended - started, id, output, code], function(err, rows){
-				console.log(err, rows);
+		var ip = host.replace("http://", "").replace(":4500","");
+		db.query("INSERT INTO runtime(ip,job,experiment,started,ended,elapsed,container,logs,code) VALUES(?,?,?,?,?,?,?,?,?)", 
+			[ip, job.name, experiment, started, ended, ended - started, id, output, code], function(err, rows) {
+			//console.log(err, rows);
+			if (err) {
+				error("Could not write job to database:", err, rows);
+			} else {
+				info("Job", job.name, "on", host, "has finished");			
+			}
 		});
 	})
 }
 
 module.exports.run = run;
-module.exports.setExperiment = function(_experimentId){
+module.exports.setExperiment = function(_experimentId) {
 	experimentId = _experimentId;
 }
 
@@ -42,9 +48,12 @@ function createContainer(host, opts) {
 		method: 'POST',
 		json: opts,
 	}, function(err, resp, body) {
-		console.log(err);
-		var id = body.Id;
-		deferred.resolve(id);
+		if (err) {
+			error("Could not create a container", err, body);
+		} else {
+			var id = body.Id;
+			deferred.resolve(id);
+		}
 	});
 	return deferred.promise;
 }

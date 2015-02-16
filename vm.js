@@ -12,14 +12,16 @@ function createVM(host, cpu, memory, disk, name, bridge, cb) {
 	mac = "00:16:3e:00:" + id[0] + id[1] + ":" + id[2] + id[3];
 
 	var cmd = util.format("ssh %s 'bash /home/mustafa/buki/ubuntu1404.sh %s %s %s %s %s %s", host, cpu, memory, disk, name, bridge, mac) + "'";
-	console.log(cmd);
+	info("Opening VM with cmd:", cmd);
 	exec(cmd, function(err, stdout, stderr) {
-		console.log("Created VM ", err);
-		console.log(stdout);
-		console.log(stderr);
-		getIP(host, mac, function(ip) {
-			cb(ip);
-		});
+		if (err) {
+			err("Could not open VM..", err);
+			cb(null);
+		} else {
+			getIP(host, mac, function(ip) {
+				cb(ip);
+			});
+		}
 	});
 }
 
@@ -27,20 +29,28 @@ function createVM(host, cpu, memory, disk, name, bridge, cb) {
 
 function getIP(host, mac, cb) {
 	var cmd = util.format("ssh %s 'bash /home/mustafa/buki/getip.sh %s'", host, mac);
-	console.log("Getting IP");
+	info("Finding IP of", host, mac);
+
+	var tryCount = 0;
 
 	function find() {
 		exec(cmd, function(err, stdout, stderr) {
 			var t = stdout.split("\n");
 			if (t.length == 2) {
-				console.log("Found IP:" + t[0]);
+				var ip = t[0];
+				info("Found IP of", host, mac, ":", ip, " waiting 10 seconds to send it");
 				setTimeout(function() {
-					console.log("Waited 10 seconds for sending IP");
-					cb(t[0]);
+					cb(ip);
 				}, 10000);
 			} else {
-				console.log("Could not find ip, trying again");
-				setTimeout(find, 3000);
+				var tryLimit = 20;
+				if (tryCount >= tryLimit) {
+					error("Could not find out ip of", host, mac, "in", tryLimit, "attempts, dismissing");
+					cb(null);
+				} else {
+					tryCount++;
+					setTimeout(find, 3000);
+				}
 			}
 		});
 	}
@@ -54,18 +64,22 @@ function destroyVM(host, name) {
 
 // getIp("server0", "00:11:22:44:55:39")
 
+
 function createVMWrapper(type, cb) {
 	var vm = vmtypes[type];
 	var name = crypto.randomBytes(5).toString('hex');
 
-	// TODO: Select a new host
+	// TODO: Select a new host intelligently..
 	var host = vm.host[0];
 	var cpu = vm.cpu;
 	var ram = vm.ram * 1024;
 	var disk = vm.disk.size;
-	createVM(vm.host[0], cpu, ram, disk, name, "br0", function(ip) {
-		db.query("INSERT INTO vm(host,name, ip,boot,shutdown,experiment,type) VALUES(?,?,?,?,?,?)", [host, name, ip, new Date(), null, experiment, type], function(err, rows) {
-			console.log(err, rows);
+
+	info("Requestded vm type", type, "on host", host);
+
+	createVM(host, cpu, ram, disk, name, "br0", function(ip) {
+		db.query("INSERT INTO vm(host,name, ip,boot, shutdown, experiment,type) VALUES(?,?,?,?,?,?,?)", [host, name, ip, new Date(), null, experiment, type], function(err, rows) {
+			cb(ip);
 		});
 	});
 }
