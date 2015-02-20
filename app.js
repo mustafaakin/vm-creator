@@ -1,3 +1,6 @@
+var vmTypes = require("./vmTypes");
+var jobTypes = require("./jobTypes");
+
 global.colors = require("colors");
 var async = require("async");
 
@@ -30,12 +33,32 @@ global.experiment = 1;
 var vm = require("./vm");
 var job = require("./job");
 
-// vm.createVM("disk1", function(host, name, ip) {
-	var ip = "192.168.1.217"
-	job.run("http://" + ip + ":4500", {
-		Cmd: ["sysbench", "--test=cpu", "run","--max-requests=20000"],
-		name: "job1",
-	}, function() {
-		// vm.destroyVM(host, name, function() {});
-	});
-// });
+
+var jobs = [];
+
+for (var key in jobTypes) {
+	jobs.push(key);
+}
+
+var combinations = [];
+
+var total = 1 << jobs.length;
+var len = jobs.length;
+for (var i = 1; i < total; i++) {
+	// console.log(i);
+	var a = [];
+	for (var j = 0; j < len; j++) {
+		var bit = ((i & (1 << j)) >> j);
+		if (bit == 1) {
+			a.push(jobs[j]);
+		}
+	}
+	combinations.push(a);
+}
+
+async.eachSeries(combinations, function(combination, cb) {
+	console.log("Hey", combination);
+	cb(null);
+}, function() {
+	console.log("All Completed");
+})

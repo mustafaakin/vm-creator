@@ -1,5 +1,5 @@
 var util = require("util");
-var vmtypes = require("./vmtypes");
+var vmtypes = require("./vmTypes");
 var exec = require('child_process').exec;
 var crypto = require('crypto');
 
@@ -63,7 +63,6 @@ function destroyVM(host, name, cb) {
 	exec(cmd, function(err, stdout, stderr) {
 		console.log(err, stdout, stderr);
 		db.query("UPDATE vm SET shutdown = ? WHERE name = ? AND host = ?", [new Date(), name, host], function(err, rows) {
-			console.log(err, rows);
 			info("VM", name, "on host", host, "destroyed");
 			cb();
 		});
