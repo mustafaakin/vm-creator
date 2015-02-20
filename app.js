@@ -30,15 +30,12 @@ global.experiment = 1;
 var vm = require("./vm");
 var job = require("./job");
 
-
-
-vm.createVM("avg1", function(host, name, ip) {
+// vm.createVM("disk1", function(host, name, ip) {
+	var ip = "192.168.1.217"
 	job.run("http://" + ip + ":4500", {
-		Cmd: ["sysbench", "--test=cpu", "run"],
+		Cmd: ["sysbench", "--test=cpu", "run","--max-requests=20000"],
 		name: "job1",
 	}, function() {
-		vm.destroy(host, name, function() {
-
-		});
+		// vm.destroyVM(host, name, function() {});
 	});
-});
+// });

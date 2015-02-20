@@ -15,7 +15,7 @@ function createVM(host, cpu, memory, disk, name, bridge, cb) {
 	info("Opening VM with cmd:", cmd);
 	exec(cmd, function(err, stdout, stderr) {
 		if (err) {
-			err("Could not open VM..", err);
+			error("Could not open VM..", err);
 			cb(null);
 		} else {
 			getIP(host, mac, function(ip) {
@@ -59,11 +59,14 @@ function getIP(host, mac, cb) {
 }
 
 function destroyVM(host, name, cb) {
-	var cmd = util.format("ssh %s 'virsh destroy %s &&  rm -Rf /home/mustafa/buki/vms/%s'", host, name, name);
+	var cmd = util.format("ssh %s 'virsh undefine %s && virsh destroy %s &&  rm -Rf /home/mustafa/buki/vms/%s'", host, name, name, name);
 	exec(cmd, function(err, stdout, stderr) {
 		console.log(err, stdout, stderr);
-		info("VM", name, "on host", host, "destroyed");
-		cb();
+		db.query("UPDATE vm SET shutdown = ? WHERE name = ? AND host = ?", [new Date(), name, host], function(err, rows) {
+			console.log(err, rows);
+			info("VM", name, "on host", host, "destroyed");
+			cb();
+		});
 	});
 }
 
