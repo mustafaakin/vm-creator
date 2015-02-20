@@ -3,7 +3,7 @@ var Q = require("q");
 
 
 
-function run(host, job) {
+function run(host, job, cb) {
 	info("Running job", job.name, "on", host, "with command", job.Cmd);	
 	var id, code, output;
 	var started = new Date();
@@ -20,7 +20,7 @@ function run(host, job) {
 		code = _code;
 		return getLogs(host, id);
 	}).then(function(_output) {
-		output = _output;
+		output = _output;	
 		ended = new Date();
 		// console.log(id, code, output);
 		var ip = host.replace("http://", "").replace(":4500","");
@@ -32,6 +32,7 @@ function run(host, job) {
 			} else {
 				info("Job", job.name, "on", host, "has finished");			
 			}
+			cb();
 		});
 	})
 }

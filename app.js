@@ -1,4 +1,5 @@
 global.colors = require("colors");
+var async = require("async");
 
 function d() {
 	return (new Date()).toLocaleTimeString();
@@ -29,11 +30,15 @@ global.experiment = 1;
 var vm = require("./vm");
 var job = require("./job");
 
-vm.createVM("avg3", function(ip) {
-	// var ip = "192.168.1.247";
+
+
+vm.createVM("avg1", function(host, name, ip) {
 	job.run("http://" + ip + ":4500", {
 		Cmd: ["sysbench", "--test=cpu", "run"],
 		name: "job1",
-	});
+	}, function() {
+		vm.destroy(host, name, function() {
 
+		});
+	});
 });

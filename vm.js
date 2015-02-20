@@ -58,8 +58,13 @@ function getIP(host, mac, cb) {
 	setTimeout(find, 2000);
 }
 
-function destroyVM(host, name) {
-	// Not implemented yet
+function destroyVM(host, name, cb) {
+	var cmd = util.format("ssh %s 'virsh destroy %s &&  rm -Rf /home/mustafa/buki/vms/%s'", host, name, name);
+	exec(cmd, function(err, stdout, stderr) {
+		console.log(err, stdout, stderr);
+		info("VM", name, "on host", host, "destroyed");
+		cb();
+	});
 }
 
 // getIp("server0", "00:11:22:44:55:39")
@@ -79,7 +84,7 @@ function createVMWrapper(type, cb) {
 
 	createVM(host, cpu, ram, disk, name, "br0", function(ip) {
 		db.query("INSERT INTO vm(host,name, ip,boot, shutdown, experiment,type) VALUES(?,?,?,?,?,?,?)", [host, name, ip, new Date(), null, experiment, type], function(err, rows) {
-			cb(ip);
+			cb(host, name, ip);
 		});
 	});
 }
