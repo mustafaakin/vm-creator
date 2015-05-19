@@ -7,7 +7,7 @@ module.exports = {
 			size: "20G",
 			type: "HDD",
 		},
-		price: 0.5,		
+		price: 0.5,
 	},
 	"avg2": {
 		host: ["server0", "server1"],
@@ -38,7 +38,7 @@ module.exports = {
 			type: "HDD",
 		},
 		price: 0.75,
-	},	
+	},
 	"cpu2": {
 		host: ["server0", "server1"],
 		cpu: 4,
@@ -48,7 +48,7 @@ module.exports = {
 			type: "HDD",
 		},
 		price: 1.5,
-	},		
+	},
 	"cpu3": {
 		host: ["server0", "server1"],
 		cpu: 8,
@@ -58,7 +58,7 @@ module.exports = {
 			type: "HDD",
 		},
 		price: 3,
-	},		
+	},
 	"ram1": {
 		host: ["server0", "server1"],
 		cpu: 2,
@@ -68,7 +68,7 @@ module.exports = {
 			type: "HDD",
 		},
 		price: 0.75,
-	},		
+	},
 	"ram2": {
 		host: ["server0", "server1"],
 		cpu: 4,
@@ -87,7 +87,7 @@ module.exports = {
 			size: "30G",
 			type: "HDD",
 		},
-		price: 1.5,		
+		price: 1.5,
 	},
 	"disk1": {
 		host: ["server2"],
@@ -97,7 +97,7 @@ module.exports = {
 			size: "40G",
 			type: "SSD",
 		},
-		price: 1,		
+		price: 1,
 	},
 	"disk2": {
 		host: ["server2"],
@@ -106,6 +106,37 @@ module.exports = {
 		disk: {
 			size: "30G",
 			type: "HDD",
+		},
+		price: 2,
+	},
+
+	"pags1": {
+		host: ["server2"],
+		cpu: 1,
+		ram: 512,
+		disk: {
+			size: "20G",
+			type: "SSD",
+		},
+		price: 1,
+	},
+	"pags2": {
+		host: ["server2"],
+		cpu: 2,
+		ram: 1024,
+		disk: {
+			size: "20G",
+			type: "SSD",
+		},
+		price: 2,
+	},
+	"pags3": {
+		host: ["server2"],
+		cpu: 4,
+		ram: 2048,
+		disk: {
+			size: "20G",
+			type: "SSD",
 		},
 		price: 2,
 	},

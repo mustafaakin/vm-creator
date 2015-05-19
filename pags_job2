@@ -1,0 +1,10 @@
+sysbench --max-requests=1219 --test=cpu run --num-threads=1
+sysbench --max-requests=1896 --test=cpu run --num-threads=1
+sysbench --max-requests=2177 --test=cpu run --num-threads=1
+sysbench --max-requests=2214 --test=cpu run --num-threads=2
+sysbench --max-requests=1990 --test=cpu run --num-threads=1
+sysbench --max-requests=2942 --test=cpu run --num-threads=2
+sysbench --max-requests=2711 --test=cpu run --num-threads=1
+sysbench --max-requests=1960 --test=cpu run --num-threads=2
+sysbench --max-requests=2189 --test=cpu run --num-threads=1
+sysbench --max-requests=2084 --test=cpu run --num-threads=3
